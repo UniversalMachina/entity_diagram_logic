@@ -1,0 +1,81 @@
+import React, { useState } from 'react';
+
+function App() {
+  const [elements, setElements] = useState([]);
+  const [textAreaValue, setTextAreaValue] = useState("");
+
+  const updateTextAreaFromElements = (newElements) => {
+    const newText = newElements.map(el => `>${el.name}\n${el.params.join('\n')}`).join('\n\n');
+    setTextAreaValue(newText);
+  };
+
+  const handleElementChange = (index, key, value) => {
+    const newElements = [...elements];
+    if (key === 'name') {
+      newElements[index].name = value;
+    } else if (key === 'params') {
+      newElements[index].params = value.split('\n').filter(param => param.trim() !== '');
+    }
+    setElements(newElements);
+    updateTextAreaFromElements(newElements);
+  };
+
+  const handleTextAreaChange = (e) => {
+    const input = e.target.value;
+    setTextAreaValue(input);
+    const entries = input.split('\n>').map(entry => entry.trim()).filter(entry => entry !== '');
+    const newElements = entries.map((entry) => {
+      const lines = entry.split('\n');
+      return {
+        name: lines[0].replace(/^>/, ''),
+        params: lines.slice(1)
+      };
+    });
+    setElements(newElements);
+  };
+
+  const handleDeleteElement = (index) => {
+    const newElements = [...elements];
+    newElements.splice(index, 1);
+    setElements(newElements);
+    updateTextAreaFromElements(newElements);
+  };
+
+  return (
+    <div className="App flex">
+      <div className="sidebar bg-gray-200 p-4">
+        <textarea
+          className="w-full h-full"
+          value={textAreaValue}
+          onChange={handleTextAreaChange}
+          placeholder="Add elements starting with '>' and separated by line breaks"
+        ></textarea>
+      </div>
+      <div className="main-area flex-1 p-4">
+        {elements.map((element, index) => (
+          <div key={index} className="element p-2 m-2 bg-gray-100 rounded flex flex-col">
+            <input
+              type="text"
+              value={element.name}
+              onChange={(e) => handleElementChange(index, 'name', e.target.value)}
+              className="font-bold mb-2 p-1"
+            />
+            <textarea
+              value={element.params.join('\n')}
+              onChange={(e) => handleElementChange(index, 'params', e.target.value)}
+              className="mb-2 p-1"
+            />
+            <button
+              className="self-end bg-red-500 text-white p-1 rounded"
+              onClick={() => handleDeleteElement(index)}
+            >
+              Delete
+            </button>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export default App;
