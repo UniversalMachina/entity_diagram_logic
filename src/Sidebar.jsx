@@ -1,22 +1,3 @@
-// // Sidebar.js
-// import React from 'react';
-
-// const Sidebar = ({ textAreaValue, handleTextAreaChange, handleFocus, handleBlur }) => (
-//   <div className="sidebar bg-gray-200 p-4">
-//     <textarea
-//       className="w-full h-full"
-//       value={textAreaValue}
-//       onFocus={handleFocus}
-//       onBlur={handleBlur}
-//       onChange={handleTextAreaChange}
-//       placeholder="Add elements starting with '>' and separated by line breaks"
-//     ></textarea>
-//   </div>
-// );
-
-// export default Sidebar;
-
-
 import React, { useState, useEffect, useRef } from 'react';
 
 const Sidebar = ({ textAreaValue, handleTextAreaChange, handleFocus, handleBlur }) => {

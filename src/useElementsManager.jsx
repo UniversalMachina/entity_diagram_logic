@@ -108,5 +108,9 @@ useEffect(() => {
       };
 
 
+
+    
+
+
   return { elements, textAreaValue, handleAddElement, handleDeleteElement, handleTextAreaChange, handleUpdateElement, handleFocus, handleBlur };
 }
