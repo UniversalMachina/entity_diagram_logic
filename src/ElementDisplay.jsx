@@ -1,11 +1,10 @@
-// ElementDisplay.js
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 
 const ElementDisplay = ({ element, index, onUpdate }) => {
   const [name, setName] = useState(element.name);
   const [params, setParams] = useState(element.params || []);
+  const [newParam, setNewParam] = useState("");
 
-  // Update local state when element prop changes
   useEffect(() => {
     setName(element.name);
     setParams(element.params || []);
@@ -30,6 +29,32 @@ const ElementDisplay = ({ element, index, onUpdate }) => {
     onUpdate(index, { ...element, params: updatedParams });
   };
 
+  const handleNewParamChange = (e) => {
+    setNewParam(e.target.value);
+  };
+
+  const addNewParam = () => {
+    if (newParam.trim() !== "") {
+      const updatedParams = [...params, newParam];
+      setParams(updatedParams);
+      onUpdate(index, { ...element, params: updatedParams });
+      setNewParam(""); // Clear the newParam input field after adding the new parameter
+    }
+  };
+
+  // Add the new param when Enter key is pressed
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      addNewParam();
+    }
+  };
+
+  // Optional: You can also add a onBlur handler to add the param when the input loses focus
+  // This is useful if users are more likely to click away than press Enter
+  const handleBlur = () => {
+    addNewParam();
+  };
+
   return (
     <div className="p-2 m-2 bg-gray-100 rounded flex flex-col">
       <input
@@ -38,7 +63,7 @@ const ElementDisplay = ({ element, index, onUpdate }) => {
         onChange={handleNameChange}
         className="font-bold p-1"
       />
-      {params.length > 0 ? params.map((param, idx) => (
+      {params.map((param, idx) => (
         <div key={idx} className="flex items-center">
           <input
             type="text"
@@ -53,7 +78,16 @@ const ElementDisplay = ({ element, index, onUpdate }) => {
             Delete Param
           </button>
         </div>
-      )) : <div className="m-1 p-1 bg-gray-200 rounded">No parameters</div>}
+      ))}
+      <input
+        type="text"
+        placeholder="Add new parameter"
+        value={newParam}
+        onChange={handleNewParamChange}
+        onKeyPress={handleKeyPress}
+        onBlur={handleBlur}
+        className="m-1 p-1 bg-gray-200 rounded"
+      />
       <button
         className="self-end bg-red-500 text-white p-1 rounded mt-2"
         onClick={() => onUpdate(index, null)}
