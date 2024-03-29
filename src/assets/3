@@ -3,8 +3,6 @@ import React, { useState, useEffect, useRef } from 'react';
 const ElementDisplay = ({ element, index, onUpdate }) => {
   const [name, setName] = useState(element.name);
   const [params, setParams] = useState(element.params || []);
-  const [addingParamState, SetaddingParamState] = useState(false);
-
   const lastParamRef = useRef(null); // Ref for managing focus on the last parameter input
 
   useEffect(() => {
@@ -14,12 +12,10 @@ const ElementDisplay = ({ element, index, onUpdate }) => {
 
   useEffect(() => {
     // Whenever params change, focus the last parameter input
-    if (params.length > 0 && lastParamRef.current && addingParamState==true) {
+    if (params.length > 0 && lastParamRef.current) {
       lastParamRef.current.focus();
     }
-    SetaddingParamState(false);
-
-  }, [params,addingParamState, SetaddingParamState]);
+  }, [params]);
 
   const handleNameChange = (e) => {
     setName(e.target.value);
@@ -36,22 +32,6 @@ const ElementDisplay = ({ element, index, onUpdate }) => {
     } else {
       newParams[idx] = value;
     }
-    setParams(newParams);
-    onUpdate(index, { ...element, params: newParams });
-  };
-
-
-  const handleAddParam = (idx, value) => {
-    const newParams = [...params];
-    if (idx >= newParams.length) {
-      // Add new parameter only if it's not empty
-      if (value.trim() !== '') {
-        newParams.push(value);
-      }
-    } else {
-      newParams[idx] = value;
-    }
-    SetaddingParamState(true);
     setParams(newParams);
     onUpdate(index, { ...element, params: newParams });
   };
@@ -93,7 +73,7 @@ const ElementDisplay = ({ element, index, onUpdate }) => {
         key={params.length} // Ensures the input is treated as "new" when params change
         type="text"
         placeholder="Add new parameter"
-        onChange={(e) => handleAddParam(params.length, e.target.value)}
+        onChange={(e) => handleParamChange(params.length, e.target.value)}
         className="m-1 p-1 bg-gray-200 rounded"
       />
       {params.length === 0 && <div className="m-1 p-1 bg-gray-200 rounded">No parameters</div>}
